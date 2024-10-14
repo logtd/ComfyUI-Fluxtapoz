@@ -21,3 +21,11 @@ See the updated workflow json for the latest test.
 ### Inverse Noise (unsampling)
 
 ![unsampling_example](https://github.com/user-attachments/assets/9c604a31-5cc9-49c2-9a08-98e7872591c2)
+
+### Inject Inversed Noise
+
+See example workflow for how to use this one. It's similar to inverse noise/unsampling, but has better adherence to the input image.
+
+![inject_inversed_noise_example](https://github.com/user-attachments/assets/ee052855-12c6-47f7-8178-b4acfb2ca6b9)
+![inject_unsampled_noise_cowboy](https://github.com/user-attachments/assets/4d92c591-e04d-4123-a432-d859a32e5f46)
+
