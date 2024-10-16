@@ -13,6 +13,11 @@ Admittedly this has some small differences between the example images in the pap
 It's currently my recommended way to unsample an image for editing or style transfer.
 ![rf_inversion](https://github.com/user-attachments/assets/f0517649-4dbb-4371-a8d5-3ae90e3b6368)
 
+It can also be used to mix or style images (although I'm still working out the settings for this)
+![rf_inverse_mix](https://github.com/user-attachments/assets/2588fab7-3de6-4708-b1da-6da4c8be4edb)
+
+
+
 ### Node Parameters
 
 #### Outverse Flux Model Pred Node
