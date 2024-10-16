@@ -13,6 +13,23 @@ Admittedly this has some small differences between the example images in the pap
 It's currently my recommended way to unsample an image for editing or style transfer.
 ![rf_inversion](https://github.com/user-attachments/assets/f0517649-4dbb-4371-a8d5-3ae90e3b6368)
 
+### Node Parameters
+
+#### Outverse Flux Model Pred Node
+* Ensure "reverse_ode" is set to True on the "Outverse Flux Model Pred" node. Sometimes when users upgrade this repo it doesn't load the workflow correctly.
+
+#### Flux Reverse ODE Sampler
+* latent_image -- the image to guide the sampling
+* start_step -- the step that the sampler starts guiding the sampling towards the image in "latent_image"
+* end_step -- the last step for guiding the sampling (not inclusive)
+* eta -- the strength of the guidance
+
+#### Flux Forward ODE Sampler
+* gamma -- the paper leaves this at 0.5, but is similar to eta in the Reverse sampler
+
+#### Guidance Suggestions
+* For sampling normal flux guidance works (~3.5)
+* For unsampling I find low values such as 0 or 1 work best
 
 ### Inverse Noise (unsampling)
 
