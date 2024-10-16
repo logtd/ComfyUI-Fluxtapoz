@@ -3,9 +3,9 @@ from .nodes.influx_model_pred_node import InFluxModelSamplingPredNode, OutFluxMo
 from .nodes.flux_deguidance_node import FluxDeGuidance
 from .nodes.inverse_sampler_node import FluxInverseSamplerNode
 from .nodes.apply_ref_flux import ApplyRefFluxNode, ConfigureRefFluxNode
-# from .nodes.add_flow_flux_node import AddFluxFlowNode
-# from .nodes.apply_rave_node import ApplyFluxRaveAttentionNode
 from .nodes.mix_noise_node import FluxNoiseMixerNode
+from .nodes.rectified_sampler_nodes import FluxForwardODESamplerNode, FluxReverseODESamplerNode
+
 
 
 NODE_CLASS_MAPPINGS = {
@@ -17,6 +17,8 @@ NODE_CLASS_MAPPINGS = {
     "ApplyRefFlux": ApplyRefFluxNode,
     "ConfigureRefFlux": ConfigureRefFluxNode,
     "FluxNoiseMixer": FluxNoiseMixerNode,
+    "FluxForwardODESampler": FluxForwardODESamplerNode,
+    "FluxReverseODESampler": FluxReverseODESamplerNode,
     # "AddFluxFlow": AddFluxFlowNode,
     # "ApplyFluxRaveAttention": ApplyFluxRaveAttentionNode,
 }
@@ -30,6 +32,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "ApplyRefFlux": "Apply Ref Flux Model",
     "ConfigureRefFlux": "Configure Ref for Flux",
     "FluxNoiseMixer": "Flux Mix Noise",
+    "FluxForwardODESampler": "Flux Forward ODE Sampler",
+    "FluxReverseODESampler": "Flux Reverse ODE Sampler",
     # "AddFluxFlow": "Add Flux Flow",
     # "ApplyFluxRaveAttention": "Apply Flux Rave Attn",
 }
