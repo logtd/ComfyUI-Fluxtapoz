@@ -11,10 +11,8 @@ No ControlNets are used in any of the following examples.
 ## Rectified Flow Inversion (Unsampling from [RF Inversion](https://rf-inversion.github.io/))
 Admittedly this has some small differences between the example images in the paper, but it's very close. Will be updating as I find the issue.
 It's currently my recommended way to unsample an image for editing or style transfer.
+![rf_inversion](https://github.com/user-attachments/assets/f0517649-4dbb-4371-a8d5-3ae90e3b6368)
 
-![rf_inversion_anime](https://github.com/user-attachments/assets/7d6bd218-7e97-439f-a801-cc301a76e1b0)
-
-![rf_inversion_cgi](https://github.com/user-attachments/assets/9eb609e5-da9b-4b17-a344-ecdaf52ff582)
 
 ### Inverse Noise (unsampling)
 
