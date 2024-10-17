@@ -12,7 +12,7 @@ No ControlNets are used in any of the following examples.
 Admittedly this has some small differences between the example images in the paper, but it's very close. Will be updating as I find the issue.
 It's currently my recommended way to unsample an image for editing or style transfer.
 
-Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_rf_inversion_workflow.json) for RF-Inversion.
+Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_rf_inversion_updated.json) for RF-Inversion.
 
 ![rf_inversion](https://github.com/user-attachments/assets/f0517649-4dbb-4371-a8d5-3ae90e3b6368)
 
@@ -31,16 +31,18 @@ It can also be used to mix or style images (although I'm still working out the s
 * start_step -- the step that the sampler starts guiding the sampling towards the image in "latent_image"
 * end_step -- the last step for guiding the sampling (not inclusive)
 * eta -- the strength of the guidance. The paper does not decrease this below 0.7
+* eta_trend -- how the eta should increase/decrease/stay constant between start_step and end_step
 
 #### Flux Forward ODE Sampler
 * gamma -- the paper leaves this at 0.5
 
 #### Guidance Suggestions
 * For sampling normal flux guidance works (~3.5)
-* For unsampling I find low values such as 0 or 1 work best
+* For unsampling use 0
 
 #### Common Issues
-* Blurry Results -- try lowering denoise to around 0.9 on the sampler (not the unsampling sampler) or increase the unsampling steps
+* Overlayed images -- try changing your start step and/or Eta. A start step that is too late won't be able to influence the image generation properly
+* Blurry Results -- try lowering denoise to around 0.9 on the sampler (not the unsampling sampler) or increase the unsampling steps (this should be fixed)
 * Not following edits -- try fewer steps (change start/end step) or lower eta
 
 ## Other Inversion Techniques
