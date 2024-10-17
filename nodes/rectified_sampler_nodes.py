@@ -4,16 +4,19 @@ from tqdm import trange
 from comfy.samplers import KSAMPLER
 
 
-def get_sample_forward(gamma):
+def get_sample_forward(gamma, seed):
     # Controlled Forward ODE (Algorithm 1)
+    generator = torch.Generator()
+    generator.manual_seed(seed)
+
     @torch.no_grad()
     def sample_forward(model, y0, sigmas, extra_args=None, callback=None, disable=None):
         extra_args = {} if extra_args is None else extra_args
         Y = y0.clone()
-        y1 = torch.randn_like(Y)
+        y1 = torch.randn(Y.shape, generator=generator).to(y0.device)
         N = len(sigmas)-1
         s_in = y0.new_ones([y0.shape[0]])
-        for i in trange(len(sigmas) - 1, disable=disable):
+        for i in trange(N, disable=disable):
             t_i = model.inner_model.inner_model.model_sampling.timestep(sigmas[i])
 
             # 6. Unconditional Vector field uti(Yti) = u(Yti, ti, Φ(“”); φ)
@@ -66,7 +69,7 @@ def get_sample_reverse(latent_image, eta, start_time, end_time, eta_trend):
         eta_values = generate_eta_values(N, start_time, end_time, eta, eta_trend)
         for i in trange(N, disable=disable):
             # t_i = 1-model.inner_model.inner_model.model_sampling.timestep(sigmas[i]) # TODO: figure out which one to use
-            t_i = i/N
+            t_i = i/N # Empiracally better results
             sigma = sigmas[i]
 
             # 5. Unconditional Vector field uti(Xti) = -u(Xti, 1-ti, Φ(“prompt”); φ)
@@ -95,14 +98,15 @@ class FluxForwardODESamplerNode:
         return {"required": { 
             "gamma": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 100.0, "step": 0.01}),
         }, "optional": {
+            "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff }),
         }}
     RETURN_TYPES = ("SAMPLER",)
     FUNCTION = "build"
 
     CATEGORY = "flux"
 
-    def build(self, gamma):
-        sampler = KSAMPLER(get_sample_forward(gamma))
+    def build(self, gamma, seed=0):
+        sampler = KSAMPLER(get_sample_forward(gamma, seed))
 
         return (sampler, )
 

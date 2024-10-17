@@ -526,72 +526,6 @@
       ]
     },
     {
-      "id": 81,
-      "type": "GetNode",
-      "pos": {
-        "0": -173.71441650390625,
-        "1": 1051.699462890625
-      },
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {
-        "collapsed": true
-      },
-      "order": 2,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": [
-            176
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Get_HEIGHT",
-      "properties": {},
-      "widgets_values": [
-        "HEIGHT"
-      ]
-    },
-    {
-      "id": 82,
-      "type": "GetNode",
-      "pos": {
-        "0": -168.71441650390625,
-        "1": 1009.69970703125
-      },
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {
-        "collapsed": true
-      },
-      "order": 3,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "INT",
-          "type": "INT",
-          "links": [
-            177
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Get_WIDTH",
-      "properties": {},
-      "widgets_values": [
-        "WIDTH"
-      ]
-    },
-    {
       "id": 104,
       "type": "VAEDecode",
       "pos": {
@@ -646,7 +580,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 4,
+      "order": 2,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -679,7 +613,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 5,
+      "order": 3,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -699,29 +633,6 @@
       ]
     },
     {
-      "id": 121,
-      "type": "Note",
-      "pos": {
-        "0": -570.1758422851562,
-        "1": 741.79296875
-      },
-      "size": {
-        "0": 268.1962585449219,
-        "1": 234.70770263671875
-      },
-      "flags": {},
-      "order": 6,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [],
-      "properties": {},
-      "widgets_values": [
-        "More steps during unsampling gives more detail and less likely to get blurry results"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 78,
       "type": "INTConstant",
       "pos": {
@@ -733,7 +644,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 7,
+      "order": 4,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -769,7 +680,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 8,
+      "order": 5,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -805,7 +716,7 @@
         "1": 917.039306640625
       },
       "flags": {},
-      "order": 9,
+      "order": 6,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -843,7 +754,7 @@
         "1": 82
       },
       "flags": {},
-      "order": 10,
+      "order": 7,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -876,7 +787,7 @@
         "1": 106
       },
       "flags": {},
-      "order": 11,
+      "order": 8,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -910,7 +821,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 12,
+      "order": 9,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -942,7 +853,7 @@
         "1": 58
       },
       "flags": {},
-      "order": 38,
+      "order": 37,
       "mode": 0,
       "inputs": [
         {
@@ -1009,45 +920,6 @@
       ]
     },
     {
-      "id": 51,
-      "type": "FlipSigmas",
-      "pos": {
-        "0": -155,
-        "1": 610
-      },
-      "size": {
-        "0": 140,
-        "1": 26
-      },
-      "flags": {
-        "collapsed": true
-      },
-      "order": 37,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "sigmas",
-          "type": "SIGMAS",
-          "link": 130
-        }
-      ],
-      "outputs": [
-        {
-          "name": "SIGMAS",
-          "type": "SIGMAS",
-          "links": [
-            131
-          ],
-          "slot_index": 0,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FlipSigmas"
-      },
-      "widgets_values": []
-    },
-    {
       "id": 6,
       "type": "CLIPTextEncode",
       "pos": {
@@ -1089,98 +961,6 @@
       "bgcolor": "#353"
     },
     {
-      "id": 52,
-      "type": "InFluxModelSamplingPred",
-      "pos": {
-        "0": -198,
-        "1": 809
-      },
-      "size": {
-        "0": 210,
-        "1": 122
-      },
-      "flags": {},
-      "order": 31,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 315
-        },
-        {
-          "name": "width",
-          "type": "INT",
-          "link": 177,
-          "widget": {
-            "name": "width"
-          }
-        },
-        {
-          "name": "height",
-          "type": "INT",
-          "link": 176,
-          "widget": {
-            "name": "height"
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            314
-          ],
-          "slot_index": 0,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "InFluxModelSamplingPred"
-      },
-      "widgets_values": [
-        1.15,
-        0.5,
-        1024,
-        1024
-      ]
-    },
-    {
-      "id": 73,
-      "type": "GetNode",
-      "pos": {
-        "0": -169,
-        "1": 969
-      },
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {
-        "collapsed": false
-      },
-      "order": 13,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            313,
-            315
-          ],
-          "slot_index": 0
-        }
-      ],
-      "title": "Get_MODEL",
-      "properties": {},
-      "widgets_values": [
-        "MODEL"
-      ]
-    },
-    {
       "id": 69,
       "type": "GetNode",
       "pos": {
@@ -1194,7 +974,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 14,
+      "order": 10,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1227,7 +1007,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 15,
+      "order": 11,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1260,7 +1040,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 32,
+      "order": 30,
       "mode": 0,
       "inputs": [
         {
@@ -1305,7 +1085,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 16,
+      "order": 12,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1338,7 +1118,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 33,
+      "order": 31,
       "mode": 0,
       "inputs": [
         {
@@ -1437,90 +1217,16 @@
       "widgets_values": []
     },
     {
-      "id": 108,
-      "type": "FluxForwardODESampler",
-      "pos": {
-        "0": -201,
-        "1": 500
-      },
-      "size": {
-        "0": 210,
-        "1": 58
-      },
-      "flags": {},
-      "order": 17,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "SAMPLER",
-          "type": "SAMPLER",
-          "links": [
-            222
-          ],
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "FluxForwardODESampler"
-      },
-      "widgets_values": [
-        0.5
-      ]
-    },
-    {
-      "id": 49,
-      "type": "BasicScheduler",
-      "pos": {
-        "0": -200,
-        "1": 659
-      },
-      "size": {
-        "0": 210,
-        "1": 106
-      },
-      "flags": {},
-      "order": 30,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 313,
-          "slot_index": 0
-        }
-      ],
-      "outputs": [
-        {
-          "name": "SIGMAS",
-          "type": "SIGMAS",
-          "links": [
-            130
-          ],
-          "slot_index": 0,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "BasicScheduler"
-      },
-      "widgets_values": [
-        "simple",
-        28,
-        1
-      ]
-    },
-    {
       "id": 157,
       "type": "PreviewImage",
       "pos": {
         "0": 1107,
         "1": 346
       },
-      "size": [
-        749.0810936896919,
-        804.6389407543991
-      ],
+      "size": {
+        "0": 749.0811157226562,
+        "1": 804.638916015625
+      },
       "flags": {},
       "order": 49,
       "mode": 0,
@@ -1534,7 +1240,8 @@
       "outputs": [],
       "properties": {
         "Node name for S&R": "PreviewImage"
-      }
+      },
+      "widgets_values": []
     },
     {
       "id": 8,
@@ -1592,7 +1299,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 18,
+      "order": 13,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1625,7 +1332,7 @@
       "flags": {
         "collapsed": false
       },
-      "order": 19,
+      "order": 14,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1707,7 +1414,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 20,
+      "order": 15,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1733,10 +1440,10 @@
         "0": 1900,
         "1": 372
       },
-      "size": [
-        1267.3341782100497,
-        668.9405804496673
-      ],
+      "size": {
+        "0": 1267.334228515625,
+        "1": 668.9405517578125
+      },
       "flags": {},
       "order": 50,
       "mode": 0,
@@ -1750,7 +1457,8 @@
       "outputs": [],
       "properties": {
         "Node name for S&R": "PreviewImage"
-      }
+      },
+      "widgets_values": []
     },
     {
       "id": 83,
@@ -1766,7 +1474,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 21,
+      "order": 16,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1799,7 +1507,7 @@
       "flags": {
         "collapsed": true
       },
-      "order": 22,
+      "order": 17,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1830,7 +1538,7 @@
         "1": 146
       },
       "flags": {},
-      "order": 34,
+      "order": 32,
       "mode": 0,
       "inputs": [
         {
@@ -1880,48 +1588,6 @@
       ]
     },
     {
-      "id": 17,
-      "type": "BasicScheduler",
-      "pos": {
-        "0": 536,
-        "1": 491
-      },
-      "size": {
-        "0": 210,
-        "1": 106
-      },
-      "flags": {},
-      "order": 40,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 318,
-          "slot_index": 0
-        }
-      ],
-      "outputs": [
-        {
-          "name": "SIGMAS",
-          "type": "SIGMAS",
-          "links": [
-            237
-          ],
-          "slot_index": 0,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "BasicScheduler"
-      },
-      "widgets_values": [
-        "beta",
-        28,
-        1
-      ]
-    },
-    {
       "id": 109,
       "type": "FluxReverseODESampler",
       "pos": {
@@ -1933,7 +1599,7 @@
         "1": 150
       },
       "flags": {},
-      "order": 39,
+      "order": 38,
       "mode": 0,
       "inputs": [
         {
@@ -1965,6 +1631,344 @@
         0,
         9,
         "constant"
+      ]
+    },
+    {
+      "id": 81,
+      "type": "GetNode",
+      "pos": {
+        "0": -174,
+        "1": 1116
+      },
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 18,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            176
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Get_HEIGHT",
+      "properties": {},
+      "widgets_values": [
+        "HEIGHT"
+      ]
+    },
+    {
+      "id": 82,
+      "type": "GetNode",
+      "pos": {
+        "0": -169,
+        "1": 1071
+      },
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 19,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "INT",
+          "type": "INT",
+          "links": [
+            177
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Get_WIDTH",
+      "properties": {},
+      "widgets_values": [
+        "WIDTH"
+      ]
+    },
+    {
+      "id": 73,
+      "type": "GetNode",
+      "pos": {
+        "0": -172,
+        "1": 1025
+      },
+      "size": {
+        "0": 210,
+        "1": 58
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 20,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            313,
+            315
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Get_MODEL",
+      "properties": {},
+      "widgets_values": [
+        "MODEL"
+      ]
+    },
+    {
+      "id": 52,
+      "type": "InFluxModelSamplingPred",
+      "pos": {
+        "0": -203,
+        "1": 867
+      },
+      "size": {
+        "0": 210,
+        "1": 122
+      },
+      "flags": {},
+      "order": 34,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 315
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "link": 177,
+          "widget": {
+            "name": "width"
+          }
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "link": 176,
+          "widget": {
+            "name": "height"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            314
+          ],
+          "slot_index": 0,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "InFluxModelSamplingPred"
+      },
+      "widgets_values": [
+        1.15,
+        0.5,
+        1024,
+        1024
+      ]
+    },
+    {
+      "id": 49,
+      "type": "BasicScheduler",
+      "pos": {
+        "0": -207,
+        "1": 715
+      },
+      "size": {
+        "0": 210,
+        "1": 106
+      },
+      "flags": {},
+      "order": 33,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 313,
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            130
+          ],
+          "slot_index": 0,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        28,
+        1
+      ]
+    },
+    {
+      "id": 51,
+      "type": "FlipSigmas",
+      "pos": {
+        "0": -163,
+        "1": 673
+      },
+      "size": {
+        "0": 140,
+        "1": 26
+      },
+      "flags": {
+        "collapsed": true
+      },
+      "order": 40,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "sigmas",
+          "type": "SIGMAS",
+          "link": 130
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            131
+          ],
+          "slot_index": 0,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FlipSigmas"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 121,
+      "type": "Note",
+      "pos": {
+        "0": -570.1758422851562,
+        "1": 741.79296875
+      },
+      "size": [
+        268.0312991580322,
+        284.2141108280541
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "Notes:\n\n* Unsampling steps should equal Sampling steps\n\n* Gamma should be 0.5 for good results but feel free to play around. At 0.0 it will not convert any data from the given image into the noise.\n\n* Gudiance should be 0 and empty prompt for doing basic inverse noise\n\n* For doing stylization you can include a prompt and play around with guidance\n"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 108,
+      "type": "FluxForwardODESampler",
+      "pos": {
+        "0": -253,
+        "1": 504
+      },
+      "size": [
+        279.9415419092593,
+        106
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAMPLER",
+          "type": "SAMPLER",
+          "links": [
+            222
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "FluxForwardODESampler"
+      },
+      "widgets_values": [
+        0.5,
+        0,
+        "fixed"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "BasicScheduler",
+      "pos": {
+        "0": 536,
+        "1": 491
+      },
+      "size": {
+        "0": 210,
+        "1": 106
+      },
+      "flags": {},
+      "order": 39,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 318,
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SIGMAS",
+          "type": "SIGMAS",
+          "links": [
+            237
+          ],
+          "slot_index": 0,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "BasicScheduler"
+      },
+      "widgets_values": [
+        "simple",
+        28,
+        1
       ]
     }
   ],
@@ -2364,12 +2368,12 @@
   ],
   "groups": [
     {
-      "title": "Unsampling",
+      "title": "Setup",
       "bounding": [
-        -677,
-        122,
-        707,
-        942
+        -2176,
+        118,
+        1440,
+        1007
       ],
       "color": "#3f789e",
       "font_size": 24,
@@ -2388,12 +2392,12 @@
       "flags": {}
     },
     {
-      "title": "Setup",
+      "title": "Unsampling",
       "bounding": [
-        -2176,
-        118,
-        1440,
-        1007
+        -677,
+        122,
+        725,
+        999
       ],
       "color": "#3f789e",
       "font_size": 24,
@@ -2403,10 +2407,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.7400249944258442,
+      "scale": 0.7400249944258193,
       "offset": [
-        252.56654508427368,
-        -73.92171419059133
+        1351.189735546649,
+        -22.905168482288904
       ]
     },
     "groupNodes": {}
