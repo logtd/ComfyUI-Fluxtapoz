@@ -16,6 +16,12 @@ Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example
 
 ![rf_inversion](https://github.com/user-attachments/assets/f0517649-4dbb-4371-a8d5-3ae90e3b6368)
 
+
+##### Update [2024.10.16]
+Stylization now works!
+![rf_inversion_stylization](https://github.com/user-attachments/assets/015825b8-9253-4270-a183-610c1420ae0d)
+
+
 It can also be used to mix or style images (although I'm still working out the settings for this)
 ![rf_inverse_mix](https://github.com/user-attachments/assets/2588fab7-3de6-4708-b1da-6da4c8be4edb)
 
