@@ -10,6 +10,6 @@ Repository = "https://github.com/logtd/ComfyUI-Fluxtapoz"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "logtd"
 DisplayName = "ComfyUI-Fluxtapoz"
 Icon = ""
