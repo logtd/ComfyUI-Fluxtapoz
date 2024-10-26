@@ -8,7 +8,7 @@ class InFluxFlipSigmasNode:
     RETURN_TYPES = ("SIGMAS",)
     FUNCTION = "flip"
 
-    CATEGORY = "flux"
+    CATEGORY = "fluxtapoz"
 
     def flip(self, sigmas):
         sigmas = sigmas.flip()

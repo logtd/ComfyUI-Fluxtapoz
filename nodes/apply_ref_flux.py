@@ -11,7 +11,7 @@ class ApplyRefFluxNode:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "apply"
 
-    CATEGORY = "reference"
+    CATEGORY = "fluxtapoz"
 
     def apply(self, model):
         # if hasattr(model.model.diffusion_model, 'is_ref') and model.model.diffusion_model.is_ref:
@@ -35,7 +35,7 @@ class ConfigureRefFluxNode:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "apply"
 
-    CATEGORY = "reference"
+    CATEGORY = "fluxtapoz"
 
     def apply(self, 
               model, 

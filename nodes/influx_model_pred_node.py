@@ -32,7 +32,7 @@ class InFluxModelSamplingPredNode:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "patch"
 
-    CATEGORY = "advanced/model"
+    CATEGORY = "fluxtapoz"
 
     def patch(self, model, max_shift, base_shift, width, height):
         m = model.clone()
@@ -99,7 +99,7 @@ class OutFluxModelSamplingPredNode:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "patch"
 
-    CATEGORY = "advanced/model"
+    CATEGORY = "fluxtapoz"
 
     def patch(self, model, max_shift, base_shift, width, height, reverse_ode=False):
         m = model.clone()

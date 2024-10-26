@@ -103,7 +103,7 @@ class FluxForwardODESamplerNode:
     RETURN_TYPES = ("SAMPLER",)
     FUNCTION = "build"
 
-    CATEGORY = "flux"
+    CATEGORY = "fluxtapoz"
 
     def build(self, gamma, seed=0):
         sampler = KSAMPLER(get_sample_forward(gamma, seed))

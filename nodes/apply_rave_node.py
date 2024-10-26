@@ -25,7 +25,7 @@ class ApplyFluxRaveAttentionNode:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "apply"
 
-    CATEGORY = "attention"
+    CATEGORY = "fluxtapoz"
 
     def apply(self, model, grid_size, seed, attn_override=default_attn):
         model = model.clone()

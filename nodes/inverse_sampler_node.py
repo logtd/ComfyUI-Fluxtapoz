@@ -28,7 +28,7 @@ class FluxInverseSamplerNode:
     RETURN_TYPES = ("SAMPLER",)
     FUNCTION = "build"
 
-    CATEGORY = "flux"
+    CATEGORY = "fluxtapoz"
 
     def build(self):
 

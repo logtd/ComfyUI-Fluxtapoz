@@ -11,7 +11,7 @@ class FluxDeGuidance:
     RETURN_TYPES = ("CONDITIONING",)
     FUNCTION = "append"
 
-    CATEGORY = "advanced/conditioning/flux"
+    CATEGORY = "fluxtapoz"
 
     def append(self, conditioning, guidance):
         c = node_helpers.conditioning_set_values(conditioning, {"guidance": guidance})

@@ -14,7 +14,7 @@ class AddFluxFlowNode:
     RETURN_TYPES = ("MODEL",)
     FUNCTION = "patch"
 
-    CATEGORY = "advanced/model"
+    CATEGORY = "fluxtapoz"
 
     def patch(self, model, flow):
         m = model.clone()
