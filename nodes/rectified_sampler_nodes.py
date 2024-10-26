@@ -126,7 +126,7 @@ class FluxReverseODESamplerNode:
     RETURN_TYPES = ("SAMPLER",)
     FUNCTION = "build"
 
-    CATEGORY = "flux"
+    CATEGORY = "fluxtapoz"
 
     def build(self, model, latent_image, eta, start_step, end_step, eta_trend='constant'):
         process_latent_in = model.get_model_object("process_latent_in")
