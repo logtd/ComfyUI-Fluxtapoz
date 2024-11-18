@@ -8,9 +8,9 @@ from .nodes.mix_noise_node import FluxNoiseMixerNode
 from .nodes.rectified_sampler_nodes import FluxForwardODESamplerNode, FluxReverseODESamplerNode
 from .nodes.rf_edit_sampler_nodes import FlowEditForwardSamplerNode, FlowEditReverseSamplerNode, PrepareAttnBankNode, RFSingleBlocksOverrideNode, RFDoubleBlocksOverrideNode
 ## Enhance
-# from .nodes.attn_override_node import FluxAttnOverrideNode
-# from .nodes.apply_seg_node import SEGAttentionNode
-# from .nodes.apply_pag_node import PAGAttentionNode
+from .nodes.attn_override_node import FluxAttnOverrideNode
+from .nodes.apply_seg_node import SEGAttentionNode
+from .nodes.apply_pag_node import PAGAttentionNode
 ## Temporal
 # from .nodes.apply_rave_node import ApplyFluxRaveAttentionNode
 # from .nodes.add_flow_flux_node import AddFluxFlowNode
@@ -38,9 +38,9 @@ NODE_CLASS_MAPPINGS = {
     "RFSingleBlocksOverride": RFSingleBlocksOverrideNode,
     "RFDoubleBlocksOverride": RFDoubleBlocksOverrideNode,
     ## ATTN
-    # "FluxAttnOverride": FluxAttnOverrideNode,
-    # "SEGAttention": SEGAttentionNode,
-    # "PAGAttention": PAGAttentionNode,
+    "FluxAttnOverride": FluxAttnOverrideNode,
+    "SEGAttention": SEGAttentionNode,
+    "PAGAttention": PAGAttentionNode,
     ## Temporal
     # "AddFluxFlow": AddFluxFlowNode,
     # "ApplyFluxRaveAttention": ApplyFluxRaveAttentionNode,
@@ -68,9 +68,9 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "RFSingleBlocksOverride": "RF-Edit Single Layers Override",
     "RFDoubleBlocksOverride": "RF-Edit Double Layers Override",
     ## Enhance
-    # "FluxAttnOverride": "Flux Attention Override",
-    # "SEGAttention": "Apply DiT SEG Attention",
-    # "PAGAttention": "Apply DiT PAG Attention",
+    "FluxAttnOverride": "Flux Attention Override",
+    "SEGAttention": "Apply Flux SEG Attention",
+    "PAGAttention": "Apply Flux PAG Attention",
     ## Temporal
     # "AddFluxFlow": "Add Flux Flow",
     # "ApplyFluxRaveAttention": "Apply Flux Rave Attn",

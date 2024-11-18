@@ -10,6 +10,9 @@ import comfy.model_patcher
 import comfy.samplers
 
 
+DEFAULT_PAG_FLUX = { 'double': set([]), 'single': set(['0'])}
+
+
 class PAGAttentionNode:
     @classmethod
     def INPUT_TYPES(s):
@@ -28,7 +31,7 @@ class PAGAttentionNode:
 
     CATEGORY = "fluxtapoz/attn"
 
-    def patch(self, model, scale, attn_override=None):
+    def patch(self, model, scale, attn_override=DEFAULT_PAG_FLUX):
         m = model.clone()
 
         def pag_mask(q, extra_options, txt_size=256):
@@ -69,10 +72,10 @@ class PAGAttentionNode:
             # and doesn't pass in cond_scale to post_cfg_function
             
             for block_idx in attn_override['double']:
-                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, pag_mask, f"double_{block_idx}", "mask_fn", 0)
+                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, pag_mask, f"double", "mask_fn", int(block_idx))
 
             for block_idx in attn_override['single']:
-                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, pag_mask, f"single_{block_idx}", "mask_fn", 0)
+                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, pag_mask, f"single", "mask_fn", int(block_idx))
 
             (pag,) = comfy.samplers.calc_cond_batch(model, [cond], x, sigma, model_options)
 

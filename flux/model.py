@@ -107,6 +107,8 @@ class Flux(OriginalFlux):
         transformer_options['original_shape'] = x.shape
         patch_size = 2
         x = comfy.ldm.common_dit.pad_to_patch_size(x, (patch_size, patch_size))
+        transformer_options['patch_size'] = patch_size
+
 
         h_len = ((h + (patch_size // 2)) // patch_size)
         w_len = ((w + (patch_size // 2)) // patch_size)

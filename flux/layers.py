@@ -24,8 +24,8 @@ def attention(q: Tensor, k: Tensor, v: Tensor, pe: Tensor, skip_rope: bool= Fals
         k_pe = pe   
     k = apply_rope_single(k, k_pe)
     heads = q.shape[1]
-    # x = optimized_attention(q, k, v, heads, skip_reshape=True, mask=mask)
-    x = optimized_attention(q, k, v, heads, skip_reshape=True)
+    x = optimized_attention(q, k, v, heads, skip_reshape=True, mask=mask)
+    # x = optimized_attention(q, k, v, heads, skip_reshape=True)
     return x
 
 
@@ -71,11 +71,11 @@ class DoubleStreamBlock(OriginalDoubleStreamBlock):
         k = torch.cat((txt_k, img_k), dim=2)
         v = torch.cat((txt_v, img_v), dim=2)
 
-        post_q_fn = transformer_options.get('attn_replace', {}).get(f'double_{self.idx}', {}).get('post_q', None) 
+        post_q_fn = transformer_options.get('patches_replace', {}).get(f'double', {}).get(('post_q', self.idx), None) 
         if post_q_fn is not None:
             q = post_q_fn(q, transformer_options)
 
-        mask_fn = transformer_options.get('attn_replace', {}).get(f'double_{self.idx}', {}).get('mask_fn', None) 
+        mask_fn = transformer_options.get('patches_replace', {}).get(f'double', {}).get(('mask_fn', self.idx), None) 
         mask = None
         if mask_fn is not None:
             mask = mask_fn(q, transformer_options, 256)
@@ -122,11 +122,11 @@ class SingleStreamBlock(OriginalSingleStreamBlock):
         q, k, v = rearrange(qkv, "B L (K H D) -> K B H L D", K=3, H=self.num_heads)
         q, k = self.norm(q, k, v)
 
-        post_q_fn = transformer_options.get('attn_replace', {}).get(f'double_{self.idx}', {}).get('post_q', None) 
+        post_q_fn = transformer_options.get('patches_replace', {}).get(f'single', {}).get(('post_q', self.idx), None) 
         if post_q_fn is not None:
             q = post_q_fn(q, transformer_options)
 
-        mask_fn = transformer_options.get('attn_replace', {}).get(f'double_{self.idx}', {}).get('mask_fn', None) 
+        mask_fn = transformer_options.get('patches_replace', {}).get(f'single', {}).get(('mask_fn', self.idx), None) 
         mask = None
         if mask_fn is not None:
             mask = mask_fn(q, transformer_options, 256)

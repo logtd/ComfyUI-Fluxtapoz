@@ -5,9 +5,11 @@ from einops import rearrange
 import torch
 import torch.nn.functional as F
 
-from comfy.ldm.modules.attention import optimized_attention
 import comfy.model_patcher
 import comfy.samplers
+
+
+DEFAULT_SEG_FLUX = { 'double': set([]), 'single': set(['0'])}
 
 
 def gaussian_blur_2d(img, kernel_size, sigma):
@@ -53,24 +55,25 @@ class SEGAttentionNode:
 
     CATEGORY = "fluxtapoz/attn"
 
-    def patch(self, model, scale, blur, inf_blur, attn_override=None):
+    def patch(self, model, scale, blur, inf_blur, attn_override=DEFAULT_SEG_FLUX):
         m = model.clone()
 
-        def seg_attention(q, extra_options):
+        def seg_attention(q, extra_options, txt_shape=256):
             _, _, sequence_length, _ = q.shape
-            shape = extra_options['patched_shape']
+            shape = extra_options['original_shape']
+            patch_size = extra_options['patch_size']
             oh, ow = shape[-2:]
-            ratio = oh/ow
-            d = sequence_length
-            w = int((d/ratio)**(0.5))
-            h = int(d/w)
-            q = rearrange(q, 'b a (h w) d -> b a d w h', h=h)
+            h = oh // patch_size
+            q_img = q[:, :, txt_shape:]
+            num_heads = q_img.shape[1]
+            q_img = rearrange(q_img, 'b a (h w) d -> b (a d) w h', h=h)
             if not inf_blur:
                 kernel_size = math.ceil(6 * blur) + 1 - math.ceil(6 * blur) % 2
-                q = gaussian_blur_2d(q, kernel_size, blur)
+                q_img = gaussian_blur_2d(q_img, kernel_size, blur)
             else:
-                q = q.mean(dim=(-2, -1), keepdim=True)
-            q = rearrange(q, 'b a d w h -> b a (h w) d')
+                q_img = q_img.mean(dim=(-2, -1), keepdim=True)
+            q_img = rearrange(q_img, 'b (a d) w h -> b a (h w) d', a=num_heads)
+            q[:,:, txt_shape:] = q_img
             return q
 
         def post_cfg_function(args):
@@ -91,10 +94,10 @@ class SEGAttentionNode:
             len_conds = 1 if args.get('uncond', None) is None else 2 
             
             for block_idx in attn_override['double']:
-                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, seg_attention, f"double_{block_idx}", "post_q", 0)
+                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, seg_attention, f"double", "post_q", int(block_idx))
 
             for block_idx in attn_override['single']:
-                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, seg_attention, f"single_{block_idx}", "post_q", 0)
+                model_options = comfy.model_patcher.set_model_options_patch_replace(model_options, seg_attention, f"single", "post_q", int(block_idx))
 
             (seg,) = comfy.samplers.calc_cond_batch(model, [cond], x, sigma, model_options)
 
