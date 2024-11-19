@@ -79,3 +79,13 @@ See example workflow for how to use this one. It's similar to inverse noise/unsa
   year={2024}
 }
 ```
+
+[RF-Solver-Edit](https://github.com/wangjiangshan0725/RF-Solver-Edit)
+```
+@article{wang2024taming,
+  title={Taming Rectified Flow for Inversion and Editing},
+  author={Wang, Jiangshan and Pu, Junfu and Qi, Zhongang and Guo, Jiayi and Ma, Yue and Huang, Nisha and Chen, Yuxin and Li, Xiu and Shan, Ying},
+  journal={arXiv preprint arXiv:2411.04746},
+  year={2024}
+}
+```
