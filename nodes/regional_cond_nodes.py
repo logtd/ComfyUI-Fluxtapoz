@@ -5,8 +5,8 @@ import comfy.model_sampling
 
 
 DEFAULT_REGIONAL_ATTN = {
-    'double': [0],
-    'single': []
+    'double': [i for i in range(1, 19, 2)],
+    'single': [i for i in range(1, 38, 2)]
 }
 
 
