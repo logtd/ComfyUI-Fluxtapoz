@@ -17,55 +17,40 @@ Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example
 
 ![rf_inversion](https://github.com/user-attachments/assets/f0517649-4dbb-4371-a8d5-3ae90e3b6368)
 
-##### Update [2024.10.16]
+### RF-Inversion Stylization
 
-Stylization now works!
-![rf_inversion_stylization](https://github.com/user-attachments/assets/015825b8-9253-4270-a183-610c1420ae0d)
+RF-Inversion can also be used to stylize images.
 
-It can also be used to mix or style images (although I'm still working out the settings for this)
-![rf_inverse_mix](https://github.com/user-attachments/assets/2588fab7-3de6-4708-b1da-6da4c8be4edb)
+Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_rf_inversion_stylization.json) to style images.
 
-### Node Parameters
+![rf_inversion_style](https://github.com/user-attachments/assets/bb1a1aef-74f1-4ad3-9687-d3d8d41ce7d1)
 
-#### Outverse Flux Model Pred Node
 
--   Ensure "reverse_ode" is set to True on the "Outverse Flux Model Pred" node. Sometimes when users upgrade this repo it doesn't load the workflow correctly.
+## RF-Edit (Unsampling from [RF-Solver-Edit](https://github.com/wangjiangshan0725/RF-Solver-Edit))
+RF-Edit is an alternative way to edit images. It may suit some use cases better than RF-Inversion and I recommend trying both.
 
-#### Flux Reverse ODE Sampler
+Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_rf_edit_workflow_alternative.json) for RF-Edit.
 
--   latent_image -- the image to guide the sampling
--   start_step -- the step that the sampler starts guiding the sampling towards the image in "latent_image"
--   end_step -- the last step for guiding the sampling (not inclusive)
--   eta -- the strength of the guidance. The paper does not decrease this below 0.7
--   eta_trend -- how the eta should increase/decrease/stay constant between start_step and end_step
+![rf_edit_wolf](https://github.com/user-attachments/assets/ad583ad0-7e04-4bc5-9d3c-f08d4cc493a0)
 
-#### Flux Forward ODE Sampler
 
--   gamma -- the paper leaves this at 0.5
 
-#### Guidance Suggestions
+## Regional Prompting
+Regional prompting allows you to prompt specific areas of the latent to give more control. You can combine it with Redux, but Redux is so powerful it dominates the generation.
+This implementation is based on [XLabs' regional prompting](https://github.com/instantX-research/Regional-Prompting-FLUX).
 
--   For sampling normal flux guidance works (~3.5)
--   For unsampling use 0
+Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_flux_regional.json) for regional prompting.
 
-#### Common Issues
+![ComfyUI_temp_kzsib_00029_](https://github.com/user-attachments/assets/364ea890-8585-43f4-9ffa-f0a24a775f27)
 
--   Overlayed images -- try changing your start step and/or Eta. A start step that is too late won't be able to influence the image generation properly
--   Not following edits -- try fewer steps (change start/end step) or lower eta
--   Make sure your steps on the Forward (unsampling) and Reverse (sampling) samplers are the same (recommended 28 each)
 
-## Other Inversion Techniques
+## Enhancement
+There are two nodes for Perturbed Attention Guidance (PAG) and Smoothed Energy Guidance (SEG) that can add detail to images.
 
-### Inverse Noise (unsampling via DDIM)
+The following from left to right: Vanilla Flux, PAG, SEG
+![ComfyUI_00069_](https://github.com/user-attachments/assets/6e8bf072-dcc8-454e-bf97-b76a5694db91)
 
-![unsampling_example](https://github.com/user-attachments/assets/9c604a31-5cc9-49c2-9a08-98e7872591c2)
 
-### Inject Inversed Noise
-
-See example workflow for how to use this one. It's similar to inverse noise/unsampling, but has better adherence to the input image.
-
-![inject_inversed_noise_example](https://github.com/user-attachments/assets/ee052855-12c6-47f7-8178-b4acfb2ca6b9)
-![inject_unsampled_noise_cowboy](https://github.com/user-attachments/assets/4d92c591-e04d-4123-a432-d859a32e5f46)
 
 ## Acknowledgements
 
@@ -86,6 +71,15 @@ See example workflow for how to use this one. It's similar to inverse noise/unsa
   title={Taming Rectified Flow for Inversion and Editing},
   author={Wang, Jiangshan and Pu, Junfu and Qi, Zhongang and Guo, Jiayi and Ma, Yue and Huang, Nisha and Chen, Yuxin and Li, Xiu and Shan, Ying},
   journal={arXiv preprint arXiv:2411.04746},
+  year={2024}
+}
+```
+[XLabs' regional prompting](https://github.com/instantX-research/Regional-Prompting-FLUX)
+```
+@article{chen2024training,
+  title={Training-free Regional Prompting for Diffusion Transformers},
+  author={Chen, Anthony and Xu, Jianjin and Zheng, Wenzhao and Dai, Gaole and Wang, Yida and Zhang, Renrui and Wang, Haofan and Zhang, Shanghang},
+  journal={arXiv preprint arXiv:2411.02395},
   year={2024}
 }
 ```
