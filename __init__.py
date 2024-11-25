@@ -17,6 +17,8 @@ from .nodes.apply_pag_node import PAGAttentionNode
 ## Reference-Only
 # from .nodes.apply_ref_flux import ApplyRefFluxNode
 ## Regional
+from .nodes.regional_cond_nodes import ApplyRegionalCondsNode, CreateRegionalCondNode
+from .nodes.redux_apply_node import RegionalStyleModelApplyNode
 
 
 NODE_CLASS_MAPPINGS = {
@@ -47,6 +49,9 @@ NODE_CLASS_MAPPINGS = {
     ## Reference
     # "ApplyRefFlux": ApplyRefFluxNode,
     ## Regional
+    "ApplyRegionalConds": ApplyRegionalCondsNode,
+    "CreateRegionalCond": CreateRegionalCondNode,
+    "RegionalStyleModelApply": RegionalStyleModelApplyNode
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -77,5 +82,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     ## Reference
     # "ApplyRefFlux": "Apply Reference-Only",
     ## Regional
+    "ApplyRegionalConds": "Apply Flux Regional Conds",
+    "CreateRegionalCond": "Create Flux Regional Cond",
+    "RegionalStyleModelApply": "Regional Style Model Apply",
 }
 

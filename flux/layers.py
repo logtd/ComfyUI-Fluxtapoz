@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as F
 from einops import rearrange
 from torch import Tensor
 
@@ -25,7 +26,7 @@ def attention(q: Tensor, k: Tensor, v: Tensor, pe: Tensor, skip_rope: bool= Fals
     k = apply_rope_single(k, k_pe)
     heads = q.shape[1]
     x = optimized_attention(q, k, v, heads, skip_reshape=True, mask=mask)
-    # x = optimized_attention(q, k, v, heads, skip_reshape=True)
+
     return x
 
 
@@ -75,6 +76,7 @@ class DoubleStreamBlock(OriginalDoubleStreamBlock):
         if post_q_fn is not None:
             q = post_q_fn(q, transformer_options)
 
+        # Mask Patch
         mask_fn = transformer_options.get('patches_replace', {}).get(f'double', {}).get(('mask_fn', self.idx), None) 
         mask = None
         if mask_fn is not None:
@@ -159,6 +161,7 @@ class SingleStreamBlock(OriginalSingleStreamBlock):
         # compute activation in mlp stream, cat again and run second linear layer
         output = self.linear2(torch.cat((attn, self.mlp_act(mlp)), 2))
         return x + mod.gate * output
+
 
 
 def inject_blocks(diffusion_model):

@@ -109,11 +109,16 @@ class Flux(OriginalFlux):
         x = comfy.ldm.common_dit.pad_to_patch_size(x, (patch_size, patch_size))
         transformer_options['patch_size'] = patch_size
 
-
         h_len = ((h + (patch_size // 2)) // patch_size)
         w_len = ((w + (patch_size // 2)) // patch_size)
 
         img = rearrange(x, "b c (h ph) (w pw) -> b (h w) (c ph pw)", ph=patch_size, pw=patch_size)
+
+        regional_conditioning = transformer_options.get('patches', {}).get('regional_conditioning', None)
+        if regional_conditioning is not None:
+            region_cond = regional_conditioning[0](transformer_options)
+            if region_cond is not None:
+                context = torch.cat([context, region_cond.to(context.dtype)], dim=1)
 
         txt_ids = torch.zeros((bs, context.shape[1], 3), device=x.device, dtype=x.dtype)
         img_ids_orig = self._get_img_ids(x, bs, h_len, w_len, 0, h_len, 0, w_len)

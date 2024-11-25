@@ -14,8 +14,6 @@ class ConfigureModifiedFluxNode:
     FUNCTION = "apply"
 
     def apply(self, model):
-        # if hasattr(model.model.diffusion_model, 'is_ref') and model.model.diffusion_model.is_ref:
-        #     return (model,)
         inject_flux(model.model.diffusion_model)
         inject_blocks(model.model.diffusion_model)
         return (model,)
