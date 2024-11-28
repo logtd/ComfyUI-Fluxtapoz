@@ -37,7 +37,7 @@ Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example
 
 ## Regional Prompting
 Regional prompting allows you to prompt specific areas of the latent to give more control. You can combine it with Redux, but Redux is so powerful it dominates the generation.
-This implementation is based on [XLabs' regional prompting](https://github.com/instantX-research/Regional-Prompting-FLUX).
+This implementation is based on [InstantX Regional Prompting](https://github.com/instantX-research/Regional-Prompting-FLUX).
 
 Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_flux_regional.json) for regional prompting.
 
@@ -74,7 +74,7 @@ The following from left to right: Vanilla Flux, PAG, SEG
   year={2024}
 }
 ```
-[XLabs' regional prompting](https://github.com/instantX-research/Regional-Prompting-FLUX)
+[InstantX Regional Prompting](https://github.com/instantX-research/Regional-Prompting-FLUX)
 ```
 @article{chen2024training,
   title={Training-free Regional Prompting for Diffusion Transformers},
