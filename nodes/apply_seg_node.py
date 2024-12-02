@@ -1,4 +1,3 @@
-
 import math
 
 from einops import rearrange
@@ -58,13 +57,17 @@ class SEGAttentionNode:
     def patch(self, model, scale, blur, inf_blur, attn_override=DEFAULT_SEG_FLUX):
         m = model.clone()
 
-        def seg_attention(q, extra_options, txt_shape=256):
+        def seg_attention(q, extra_options):
             _, _, sequence_length, _ = q.shape
             shape = extra_options['original_shape']
             patch_size = extra_options['patch_size']
             oh, ow = shape[-2:]
             h = oh // patch_size
-            q_img = q[:, :, txt_shape:]
+            
+            # Get text token length from model config
+            text_tokens = extra_options.get('text_tokens', sequence_length - (h * h))
+            
+            q_img = q[:, :, text_tokens:]
             num_heads = q_img.shape[1]
             q_img = rearrange(q_img, 'b a (h w) d -> b (a d) w h', h=h)
             if not inf_blur:
@@ -73,7 +76,7 @@ class SEGAttentionNode:
             else:
                 q_img = q_img.mean(dim=(-2, -1), keepdim=True)
             q_img = rearrange(q_img, 'b (a d) w h -> b a (h w) d', a=num_heads)
-            q[:,:, txt_shape:] = q_img
+            q[:,:, text_tokens:] = q_img
             return q
 
         def post_cfg_function(args):
