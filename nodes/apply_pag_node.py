@@ -1,4 +1,3 @@
-
 import math
 
 from einops import rearrange
@@ -34,20 +33,28 @@ class PAGAttentionNode:
     def patch(self, model, scale, attn_override=DEFAULT_PAG_FLUX):
         m = model.clone()
 
-        def pag_mask(q, extra_options, txt_size=256):
+        def pag_mask(q, extra_options, mask=None):
             # From diffusers implementation
-            identity_block_size = q.shape[1] - txt_size
-            # create a full mask with all entries set to 0
             seq_len = q.size(2)
+            shape = extra_options['original_shape']
+            patch_size = extra_options['patch_size']
+            oh, ow = shape[-2:]
+            h = oh // patch_size
+            
+            # Get text token length from model config
+            text_tokens = extra_options.get('text_tokens', seq_len - (h * h))
+            
+            # Create a full mask with all entries set to 0
             full_mask = torch.zeros((seq_len, seq_len), device=q.device, dtype=q.dtype)
 
-            # set the attention value between image patches to -inf
+            # Set the attention value between image patches to -inf
+            identity_block_size = seq_len - text_tokens
             full_mask[:identity_block_size, :identity_block_size] = float("-inf")
 
-            # set the diagonal of the attention value between image patches to 0
+            # Set the diagonal of the attention value between image patches to 0
             full_mask[:identity_block_size, :identity_block_size].fill_diagonal_(0)
 
-            # expand the mask to match the attention weights shape
+            # Expand the mask to match the attention weights shape
             full_mask = full_mask.unsqueeze(0).unsqueeze(0)  # Add batch and num_heads dimensions
 
             return full_mask
