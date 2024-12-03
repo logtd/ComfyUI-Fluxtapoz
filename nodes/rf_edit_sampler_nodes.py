@@ -3,6 +3,8 @@ from tqdm import trange
 
 from comfy.samplers import KSAMPLER
 
+from ..utils.attn_bank import AttentionBank
+
 
 def get_sample_forward(attn_bank, save_steps, single_layers, double_layers):
     @torch.no_grad()
@@ -146,7 +148,7 @@ class FlowEditForwardSamplerNode:
     CATEGORY = "fluxtapoz"
 
     def build(self, save_steps, single_layers=DEFAULT_SINGLE_LAYERS, double_layers=DEFAULT_DOUBLE_LAYERS):
-        attn_bank = {}
+        attn_bank = AttentionBank()
         sampler = KSAMPLER(get_sample_forward(attn_bank, save_steps, single_layers, double_layers))
 
         return (sampler, attn_bank)
