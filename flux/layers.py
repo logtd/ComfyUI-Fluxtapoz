@@ -123,6 +123,7 @@ class SingleStreamBlock(OriginalSingleStreamBlock):
 
         q, k, v = rearrange(qkv, "B L (K H D) -> K B H L D", K=3, H=self.num_heads)
         q, k = self.norm(q, k, v)
+	q, k, v = (torch.nan_to_num(ele, nan=0.0) for ele in (q, k, v))
 
         post_q_fn = transformer_options.get('patches_replace', {}).get(f'single', {}).get(('post_q', self.idx), None) 
         if post_q_fn is not None:
