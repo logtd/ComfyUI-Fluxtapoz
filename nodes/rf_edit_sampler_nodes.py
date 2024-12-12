@@ -4,9 +4,10 @@ from tqdm import trange
 from comfy.samplers import KSAMPLER
 
 from ..utils.attn_bank import AttentionBank
+from ..utils.const import DEFAULT_DOUBLE_LAYERS, DEFAULT_SINGLE_LAYERS
 
 
-def get_sample_forward(attn_bank, save_steps, single_layers, double_layers):
+def get_sample_forward(attn_bank, save_steps, single_layers, double_layers, order="second"):
     @torch.no_grad()
     def sample_forward(model, x, sigmas, extra_args=None, callback=None, disable=None):
         attn_bank.clear()
@@ -20,7 +21,7 @@ def get_sample_forward(attn_bank, save_steps, single_layers, double_layers):
         transformer_options = {**transformer_options}
         model_options['transformer_options'] = transformer_options
         extra_args['model_options'] = model_options
-        
+        prev_pred = None
         N = len(sigmas)-1
         s_in = x.new_ones([x.shape[0]])
         for i in trange(N, disable=disable):
@@ -42,7 +43,10 @@ def get_sample_forward(attn_bank, save_steps, single_layers, double_layers):
                 'double_layers': double_layers,
             }
 
-            pred = model(x, s_in * sigma, **extra_args)
+            if order == 'fireflow' and prev_pred is not None:
+                pred = prev_pred
+            else:
+                pred = model(x, s_in * sigma, **extra_args)
 
             transformer_options['rfedit'] = {
                 'step': N-i-1,
@@ -56,9 +60,12 @@ def get_sample_forward(attn_bank, save_steps, single_layers, double_layers):
             img_mid = x + (sigma_next- sigma) / 2 * pred
             sigma_mid = (sigma + (sigma_next - sigma) / 2)
             pred_mid = model(img_mid, s_in * sigma_mid, **extra_args)
-
-            first_order = (pred_mid - pred) / ((sigma_next - sigma) / 2)
-            x = x + (sigma_next - sigma) * pred + 0.5 * (sigma_next - sigma) ** 2 * first_order
+            if order == 'fireflow':
+                prev_pred = pred_mid
+                x = x + (sigma_next - sigma) * pred_mid
+            else:
+                first_order = (pred_mid - pred) / ((sigma_next - sigma) / 2)
+                x = x + (sigma_next - sigma) * pred + 0.5 * (sigma_next - sigma) ** 2 * first_order
 
             if callback is not None:
                 callback({'x': x, 'denoised': x, 'i': i, 'sigma': sigmas[i], 'sigma_hat': sigmas[i]})
@@ -67,7 +74,7 @@ def get_sample_forward(attn_bank, save_steps, single_layers, double_layers):
 
     return sample_forward
 
-def get_sample_reverse(attn_bank, inject_steps, single_layers, double_layers):
+def get_sample_reverse(attn_bank, inject_steps, single_layers, double_layers, order="second"):
     @torch.no_grad()
     def sample_reverse(model, x, sigmas, extra_args=None, callback=None, disable=None):
         if inject_steps > attn_bank['save_steps']:
@@ -82,6 +89,7 @@ def get_sample_reverse(attn_bank, inject_steps, single_layers, double_layers):
         model_options['transformer_options'] = transformer_options
         extra_args['model_options'] = model_options
 
+        prev_pred = None
         N = len(sigmas)-1
         s_in = x.new_ones([x.shape[0]])
         for i in trange(N, disable=disable):
@@ -97,7 +105,10 @@ def get_sample_reverse(attn_bank, inject_steps, single_layers, double_layers):
                 'double_layers': double_layers,
             }
 
-            pred = model(x, s_in * sigma, **extra_args)
+            if order == "fireflow" and prev_pred is not None:
+                pred = prev_pred
+            else:
+                pred = model(x, s_in * sigma, **extra_args)
 
             transformer_options['rfedit'] = {
                 'step': i,
@@ -111,9 +122,12 @@ def get_sample_reverse(attn_bank, inject_steps, single_layers, double_layers):
             img_mid = x + (sigma_prev- sigma) / 2 * pred
             sigma_mid = (sigma + (sigma_prev - sigma) / 2)
             pred_mid = model(img_mid, s_in * sigma_mid, **extra_args)
-
-            first_order = (pred_mid - pred) / ((sigma_prev - sigma) / 2)
-            x = x + (sigma_prev - sigma) * pred + 0.5 * (sigma_prev - sigma) ** 2 * first_order
+            if order == "fireflow":
+                prev_pred = pred_mid
+                x = x + (sigma_prev - sigma) * pred_mid
+            else:
+                first_order = (pred_mid - pred) / ((sigma_prev - sigma) / 2)
+                x = x + (sigma_prev - sigma) * pred + 0.5 * (sigma_prev - sigma) ** 2 * first_order
 
             if callback is not None:
                 callback({'x': x, 'denoised': x, 'i': i, 'sigma': sigmas[i], 'sigma_hat': sigmas[i]})
@@ -121,15 +135,6 @@ def get_sample_reverse(attn_bank, inject_steps, single_layers, double_layers):
         return x
 
     return sample_reverse
-
-
-DEFAULT_SINGLE_LAYERS = {}
-for i in range(38):
-    DEFAULT_SINGLE_LAYERS[f'{i}'] = i > 19
-
-DEFAULT_DOUBLE_LAYERS = {}
-for i in range(19):
-    DEFAULT_DOUBLE_LAYERS[f'{i}'] = False
 
 
 class FlowEditForwardSamplerNode:
@@ -140,16 +145,17 @@ class FlowEditForwardSamplerNode:
         },           
             "optional": {
                 "single_layers": ("SINGLE_LAYERS",),
-                "double_layers": ("DOUBLE_LAYERS",)
+                "double_layers": ("DOUBLE_LAYERS",),
+                "order": (["second", "fireflow",],),
         }}
     RETURN_TYPES = ("SAMPLER","ATTN_INJ")
     FUNCTION = "build"
 
     CATEGORY = "fluxtapoz"
 
-    def build(self, save_steps, single_layers=DEFAULT_SINGLE_LAYERS, double_layers=DEFAULT_DOUBLE_LAYERS):
+    def build(self, save_steps, single_layers=DEFAULT_SINGLE_LAYERS, double_layers=DEFAULT_DOUBLE_LAYERS, order="second"):
         attn_bank = AttentionBank()
-        sampler = KSAMPLER(get_sample_forward(attn_bank, save_steps, single_layers, double_layers))
+        sampler = KSAMPLER(get_sample_forward(attn_bank, save_steps, single_layers, double_layers, order))
 
         return (sampler, attn_bank)
 
@@ -163,15 +169,16 @@ class FlowEditReverseSamplerNode:
         },           
             "optional": {
                 "single_layers": ("SINGLE_LAYERS",),
-                "double_layers": ("DOUBLE_LAYERS",)
+                "double_layers": ("DOUBLE_LAYERS",),
+                "order": (["second", "fireflow",],),
         }}
     RETURN_TYPES = ("SAMPLER",)
     FUNCTION = "build"
 
     CATEGORY = "fluxtapoz"
 
-    def build(self, attn_inj, inject_steps, single_layers=DEFAULT_SINGLE_LAYERS, double_layers=DEFAULT_DOUBLE_LAYERS):
-        sampler = KSAMPLER(get_sample_reverse(attn_inj, inject_steps, single_layers, double_layers))
+    def build(self, attn_inj, inject_steps, single_layers=DEFAULT_SINGLE_LAYERS, double_layers=DEFAULT_DOUBLE_LAYERS, order="second"):
+        sampler = KSAMPLER(get_sample_reverse(attn_inj, inject_steps, single_layers, double_layers, order))
         return (sampler, )
 
 
@@ -193,36 +200,3 @@ class PrepareAttnBankNode:
         # Hack to force order of operations in ComfyUI graph
         return (latent, attn_inj)
 
-
-class RFSingleBlocksOverrideNode:
-    @classmethod
-    def INPUT_TYPES(s):
-        layers = {}
-        for i in range(38):
-            layers[f'{i}'] = ("BOOLEAN", { "default": i > 19 })
-        return {"required": layers}
-
-    RETURN_TYPES = ("SINGLE_LAYERS",)
-    FUNCTION = "build"
-
-    CATEGORY = "fluxtapoz"
-
-    def build(self, *args, **kwargs):
-        return (kwargs,)
-
-
-class RFDoubleBlocksOverrideNode:
-    @classmethod
-    def INPUT_TYPES(s):
-        layers = {}
-        for i in range(19):
-            layers[f'{i}'] = ("BOOLEAN", { "default": False })
-        return {"required": layers}
-
-    RETURN_TYPES = ("DOUBLE_LAYERS",)
-    FUNCTION = "build"
-
-    CATEGORY = "fluxtapoz"
-
-    def build(self, *args, **kwargs):
-        return (kwargs,)

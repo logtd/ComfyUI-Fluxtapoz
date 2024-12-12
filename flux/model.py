@@ -182,6 +182,8 @@ class Flux(OriginalFlux):
             grid_size = rave_config['grid_size']
             img_ids_orig = self._get_img_ids(x, bs, h_len*grid_size, w_len*grid_size, 0, h_len*grid_size, 0, w_len*grid_size)
 
+        transformer_options['txt_size'] = context.shape[1]
+
         out = self.forward_orig(img, img_ids_orig, context, txt_ids, timestep, y, guidance, control, transformer_options=transformer_options, ref_config=ref_config)
 
         if perform_ref:

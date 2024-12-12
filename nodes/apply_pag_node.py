@@ -22,7 +22,8 @@ class PAGAttentionNode:
                 "scale": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 100.0, "step": 0.01, "round": 0.01}),
             },
             "optional": {
-                "attn_override": ("ATTN_OVERRIDE",)
+                "attn_override": ("ATTN_OVERRIDE",),
+                "rescale": ("FLOAT", {"default": 0.0, "min": 0.0, "max": 100.0, "step": 0.01, "round": 0.01}),
             }
         }
 
@@ -31,7 +32,7 @@ class PAGAttentionNode:
 
     CATEGORY = "fluxtapoz/attn"
 
-    def patch(self, model, scale, attn_override=DEFAULT_PAG_FLUX):
+    def patch(self, model, scale, attn_override=DEFAULT_PAG_FLUX, rescale=0):
         m = model.clone()
 
         def pag_mask(q, extra_options, txt_size=256):
@@ -80,9 +81,16 @@ class PAGAttentionNode:
             (pag,) = comfy.samplers.calc_cond_batch(model, [cond], x, sigma, model_options)
 
             if len_conds == 1:
-                return cond_pred + scale * (cond_pred - pag)
+                output = cond_pred + scale * (cond_pred - pag)
+            else:
+                output = cond_pred + (scale-1.0) * (cond_pred - uncond_pred) + scale * (cond_pred - pag)
 
-            return cond_pred + (scale-1.0) * (cond_pred - uncond_pred) + scale * (cond_pred - pag)
+            if rescale > 0:
+                factor = cond_pred.std() / output.std()
+                factor = rescale * factor + (1 - rescale)
+                output = output * factor
+
+            return output
 
         m.set_model_sampler_post_cfg_function(post_cfg_function)
 
