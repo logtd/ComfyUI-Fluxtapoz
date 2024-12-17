@@ -87,7 +87,7 @@ def get_flowedit_sample(skip_steps, refine_steps, seed):
         model_options['transformer_options'] = transformer_options
         extra_args['model_options'] = model_options
 
-        source_extra_args = {**extra_args, 'model_options': { 'transformer_options': { 'latent_type': 'source '} }}
+        source_extra_args = {**extra_args, 'model_options': { 'transformer_options': { **transformer_options,'latent_type': 'source '} }}
 
         sigmas = sigmas[skip_steps:]
 
@@ -104,6 +104,7 @@ def get_flowedit_sample(skip_steps, refine_steps, seed):
             if i < N-refine_steps:
                 zt_tgt = x_tgt + zt_src - x_init
                 transformer_options['latent_type'] = 'source'
+                source_extra_args['model_options']['transformer_options']['latent_type'] = 'source'
                 vt_src = model(zt_src, sigma*s_in, **source_extra_args)
             else:
                 if i == N-refine_steps:
