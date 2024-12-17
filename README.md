@@ -33,6 +33,15 @@ Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example
 
 ![rf_edit_wolf](https://github.com/user-attachments/assets/ad583ad0-7e04-4bc5-9d3c-f08d4cc493a0)
 
+## Flow Edit
+This is an implementation of image editing from [FlowEdit](https://github.com/fallenshock/FlowEdit).
+
+It is an inversion free way to edit images.
+
+Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_flow_edit.json) to get started.
+
+![flux_flowedit](https://github.com/user-attachments/assets/a1aaeb8f-5eeb-448c-a206-b678b097fd3c)
+
 
 
 ## Regional Prompting
