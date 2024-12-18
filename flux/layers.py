@@ -49,7 +49,7 @@ def ref_attention(q, k, v, pe, ref_config, ref_type, idx, txt_shape=256):
 
 
 class DoubleStreamBlock(OriginalDoubleStreamBlock):
-    def forward(self, img: Tensor, txt: Tensor, vec: Tensor, pe: Tensor, ref_config, timestep, transformer_options={}):
+    def forward(self, img: Tensor, txt: Tensor, vec: Tensor, pe: Tensor, transformer_options={}):
         img_mod1, img_mod2 = self.img_mod(vec)
         txt_mod1, txt_mod2 = self.txt_mod(vec)
 
@@ -91,13 +91,7 @@ class DoubleStreamBlock(OriginalDoubleStreamBlock):
             elif rfedit['process'] == 'reverse' and self.idx in rfedit['bank'][step][pred]:
                 v = rfedit['bank'][step][pred][self.idx].to(v.device)
 
-        rave_options = transformer_options.get('RAVE', None)
-        if ref_config is not None and ref_config['strengths'][ref_config['step']] > 0 and self.idx <= 20:
-            attn = ref_attention(q, k, v, pe, ref_config, 'double', self.idx)
-        elif rave_options:
-            attn = rave_rope_attention(img_q, img_k, img_v, txt_q, txt_k, txt_v, pe, transformer_options, self.num_heads, transformer_options['txt_size'])
-        else:
-            attn = attention(q, k, v, pe=pe, mask=mask)
+        attn = attention(q, k, v, pe=pe, mask=mask)
 
         txt_attn, img_attn = attn[:, : txt.shape[1]], attn[:, txt.shape[1] :]
 
@@ -116,7 +110,7 @@ class DoubleStreamBlock(OriginalDoubleStreamBlock):
 
 
 class SingleStreamBlock(OriginalSingleStreamBlock):
-    def forward(self, x: Tensor, vec: Tensor, pe: Tensor, ref_config, timestep, transformer_options={}) -> Tensor:
+    def forward(self, x: Tensor, vec: Tensor, pe: Tensor, transformer_options={}) -> Tensor:
         mod, _ = self.modulation(vec)
         x_mod = (1 + mod.scale) * self.pre_norm(x) + mod.shift
         qkv, mlp = torch.split(self.linear1(x_mod), [3 * self.hidden_size, self.mlp_hidden_dim], dim=-1)
@@ -142,17 +136,7 @@ class SingleStreamBlock(OriginalSingleStreamBlock):
             elif rfedit['process'] == 'reverse' and self.idx in rfedit['bank'][step][pred]:
                 v = rfedit['bank'][step][pred][self.idx].to(v.device)
 
-        rave_options = transformer_options.get('RAVE', None)
-        if ref_config is not None and ref_config['single_strength'] > 0 and self.idx < 10:
-            attn = ref_attention(q, k, v, pe, ref_config, 'single', self.idx)
-        elif rave_options is not None:
-            txt_size = transformer_options['txt_size']
-            txt_q, img_q = q[:,:,:txt_size], q[:,:,txt_size:]
-            txt_k, img_k = k[:,:,:txt_size], k[:,:,txt_size:]
-            txt_v, img_v = v[:,:,:txt_size], v[:,:,txt_size:]
-            attn = rave_rope_attention(img_q, img_k, img_v, txt_q, txt_k, txt_v, pe, transformer_options, self.num_heads, txt_size)
-        else:
-            attn = attention(q, k, v, pe=pe, mask=mask)
+        attn = attention(q, k, v, pe=pe, mask=mask)
 
         # compute activation in mlp stream, cat again and run second linear layer
         output = self.linear2(torch.cat((attn, self.mlp_act(mlp)), 2))
@@ -168,12 +152,10 @@ class SingleStreamBlock(OriginalSingleStreamBlock):
 def inject_blocks(diffusion_model):
     for i, block in enumerate(diffusion_model.double_blocks):
         block.__class__ = DoubleStreamBlock
-        print('double_block', i, "modified")
         block.idx = i
 
     for i, block in enumerate(diffusion_model.single_blocks):
         block.__class__ = SingleStreamBlock
-        print('single_block', i, "modified")
         block.idx = i
 
     return diffusion_model

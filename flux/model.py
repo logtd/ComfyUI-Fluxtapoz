@@ -24,7 +24,6 @@ class Flux(OriginalFlux):
         guidance: Tensor = None,
         control=None,
         transformer_options = {},
-        ref_config: Dict[Any, Any] | None = None,
     ) -> Tensor:
         if img.ndim != 3 or txt.ndim != 3:
             raise ValueError("Input img and txt tensors must have 3 dimensions.")
@@ -40,55 +39,30 @@ class Flux(OriginalFlux):
         vec = vec + self.vector_in(y)
         txt = self.txt_in(txt)
 
-        ref_pes = None
-        if ref_config is not None:
-            ids = torch.cat((txt_ids, img_ids), dim=1)
-            pe = self.pe_embedder(ids)
-            # ids = torch.cat((txt_ids[:-1], img_ids), dim=1)
-            # pe = self.pe_embedder(ids)
-
-            ref_pes = []
-            for ref_img_id in ref_config['img_ids']:
-                ref_ids = torch.cat([txt_ids[:1], ref_img_id], dim=1)
-                ref_pe = self.pe_embedder(ref_ids)
-                ref_pes.append(ref_pe)
-            ref_config['ref_pes'] = ref_pes
-            del ref_config['img_ids']
-        else:
-            ids = torch.cat((txt_ids, img_ids), dim=1)
-            pe = self.pe_embedder(ids)
+        ids = torch.cat((txt_ids, img_ids), dim=1)
+        pe = self.pe_embedder(ids)
 
         for i, block in enumerate(self.double_blocks):
             
-            img, txt = block(img=img, txt=txt, vec=vec, pe=pe, ref_config=ref_config, timestep=timesteps, transformer_options=transformer_options)
+            img, txt = block(img=img, txt=txt, vec=vec, pe=pe, transformer_options=transformer_options)
 
             if control is not None: # Controlnet
                 control_i = control.get("input")
                 if i < len(control_i):
                     add = control_i[i]
                     if add is not None:
-                        img[:1] += add
-                        if ref_pes is not None:
-                            img[1:] += add
-                        #     img[-1:, txt.shape[1] :txt.shape[1]+4096, ...] += add
-                        #     img[:, 4096*1:4096*2] += add
-                            # img[:, 4096*2:4096*3] += add
+                        img += add
 
         img = torch.cat((txt, img), 1)
         for i, block in enumerate(self.single_blocks):
-            img = block(img, vec=vec, pe=pe, ref_config=None, timestep=timesteps, transformer_options=transformer_options)
+            img = block(img, vec=vec, pe=pe, transformer_options=transformer_options)
 
             if control is not None: # Controlnet
                 control_o = control.get("output")
                 if i < len(control_o):
                     add = control_o[i]
                     if add is not None:
-                        img[:1, txt.shape[1] :, ...] += add
-                        # img[:1, txt.shape[1] :txt.shape[1]+4096, ...] += add
-                        if ref_pes is not None:
-                            img[-1:, txt.shape[1] :, ...] += add
-                        #     img[:, txt.shape[1]+4096*1 :txt.shape[1]+4096*2, ...] += add
-                            # img[:, txt.shape[1]+4096*2 :txt.shape[1]+4096*3, ...] += add
+                        img[:, txt.shape[1] :, ...] += add
                         
         img = img[:, txt.shape[1] :, ...]
 
@@ -123,71 +97,10 @@ class Flux(OriginalFlux):
         txt_ids = torch.zeros((bs, context.shape[1], 3), device=x.device, dtype=x.dtype)
         img_ids_orig = self._get_img_ids(x, bs, h_len, w_len, 0, h_len, 0, w_len)
 
-        ref_options = transformer_options.get('REF_OPTIONS', None)
-
-        perform_ref = False
-        ref_config = None
-        step = None
-        if ref_options is not None:
-            ref_start_percent = ref_options.get('start_percent', 0)
-            ref_end_percent = ref_options.get('end_percent', -1)
-            sigma_percents = ref_options.get('sigma_to_percent', {})
-            step_percent = sigma_percents[timestep[0].item()]
-            perform_ref = ref_start_percent <= step_percent < ref_end_percent
-            sigma_to_step = ref_options.get('sigma_to_step', {})
-            step = sigma_to_step[timestep[0].item()]
-
-        ref_img_ids = None
-        if perform_ref:
-            # ref
-            ref_config = {** ref_options }
-            ref_config['step'] = step
-            ref_latent = ref_options['ref_latent']
-            ref_latent = ref_latent.to(x.device)
-            sigma = ref_options.get('sigmas', [])[sigma_to_step[timestep[0].item()]].to(x.device)
-            use_sigma = ref_options['use_sigmas'][step].to(x.device)
-
-            generator = torch.Generator()
-            generator.manual_seed(0)
-            noise = torch.randn(ref_latent.shape, generator=generator).to(x.device)
-
-            ref_latent =  add_noise_flux(ref_latent, noise, use_sigma)
-            # noise = torch.randn_like(ref_latent)
-            # ref_latent = add_noise(ref_latent, noise, sigma)
-            ref_latent = rearrange(ref_latent, "b c (h ph) (w pw) -> b (h w) (c ph pw)", ph=patch_size, pw=patch_size)
-            # img = torch.cat([img, ref_latent], dim=0) # this won't work with cfg
-            # horizontal translation
-            diff = 2
-            ref_img_id1 = self._get_img_ids(x, bs, h_len, w_len, 0, h_len, diff+w_len, diff+2*w_len)
-            ref_img_id2 = self._get_img_ids(x, bs, h_len, w_len, h_len+diff, diff+2*h_len, 0, w_len)
-            # ref_img_id2 = self._get_img_ids(x, bs, h_len, w_len, 0, h_len, 0, 2*w_len)
-            ref_img_ids = [ref_img_id1, ref_img_id2]
-            ref_config['img_ids'] = ref_img_ids
-
-            # img_ids_orig = self._get_img_ids(x, bs, h_len*2, w_len, 0, h_len*2, 0, w_len)
-            img = torch.cat([img, ref_latent], dim=0)
-
-            timestep = torch.concat([timestep, use_sigma.to(timestep.device).expand(1)])
-
-            # timestep = timestep.repeat(2)
-            txt_ids = txt_ids.repeat(2, 1, 1)
-            context = context.repeat(2, 1, 1)
-            y = y.repeat(2, 1)
-            guidance = guidance.repeat(2)
-            # guidance = torch.concat([guidance, torch.Tensor([0]).to(x.device)])
-            img_ids_orig = img_ids_orig.repeat(2,1,1)
-
-        rave_config = transformer_options.get('RAVE', None)
-        if rave_config is not None:
-            grid_size = rave_config['grid_size']
-            img_ids_orig = self._get_img_ids(x, bs, h_len*grid_size, w_len*grid_size, 0, h_len*grid_size, 0, w_len*grid_size)
-
         transformer_options['txt_size'] = context.shape[1]
 
-        out = self.forward_orig(img, img_ids_orig, context, txt_ids, timestep, y, guidance, control, transformer_options=transformer_options, ref_config=ref_config)
+        out = self.forward_orig(img, img_ids_orig, context, txt_ids, timestep, y, guidance, control, transformer_options=transformer_options)
 
-        if perform_ref:
-            out = out[:-1]
         return rearrange(out, "b (h w) (c ph pw) -> b c (h ph) (w pw)", h=h_len, w=w_len, ph=2, pw=2)[:,:,:h,:w]
 
 
