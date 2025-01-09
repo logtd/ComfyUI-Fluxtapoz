@@ -33,6 +33,13 @@ Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example
 
 ![rf_edit_wolf](https://github.com/user-attachments/assets/ad583ad0-7e04-4bc5-9d3c-f08d4cc493a0)
 
+## Fireflow (Unsampling from [Fireflow inversion](https://github.com/HolmesShuan/FireFlow-Fast-Inversion-of-Rectified-Flow-for-Image-Semantic-Editing))
+For a faster inversion method there is also Fireflow for image editing. 
+
+Use [this workflow](https://github.com/logtd/ComfyUI-Fluxtapoz/blob/main/example_workflows/example_rf_fireflow.json) for Fireflow.
+
+![fireflow_pirate_example](https://github.com/user-attachments/assets/0e8f8da5-6340-4d42-8d84-afedf0afe753)
+
 ## Flow Edit
 This is an implementation of image editing from [FlowEdit](https://github.com/fallenshock/FlowEdit).
 
@@ -62,7 +69,11 @@ The following from left to right: Vanilla Flux, PAG, SEG
 
 
 ## Acknowledgements
+Thank you to all researchers involved in the tools implemented in this repo.
 
+<details>
+<summary>Click to see all acknowledgements</summary>
+  
 [RF-Inversion](https://rf-inversion.github.io/)
 
 ```
@@ -83,6 +94,30 @@ The following from left to right: Vanilla Flux, PAG, SEG
   year={2024}
 }
 ```
+
+[Fireflow](https://github.com/HolmesShuan/FireFlow-Fast-Inversion-of-Rectified-Flow-for-Image-Semantic-Editing)
+```
+@misc{deng2024fireflowfastinversionrectified,
+      title={FireFlow: Fast Inversion of Rectified Flow for Image Semantic Editing}, 
+      author={Yingying Deng and Xiangyu He and Changwang Mei and Peisong Wang and Fan Tang},
+      year={2024},
+      eprint={2412.07517},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV},
+      url={https://arxiv.org/abs/2412.07517}, 
+}
+```
+
+[FlowEdit](https://github.com/fallenshock/FlowEdit)
+```
+@article{kulikov2024flowedit,
+	title = {FlowEdit: Inversion-Free Text-Based Editing Using Pre-Trained Flow Models},
+	author = {Kulikov, Vladimir and Kleiner, Matan and Huberman-Spiegelglas, Inbar and Michaeli, Tomer},
+	journal = {arXiv preprint arXiv:2412.08629},
+	year = {2024}
+	}
+```
+
 [InstantX Regional Prompting](https://github.com/instantX-research/Regional-Prompting-FLUX)
 ```
 @article{chen2024training,
@@ -92,3 +127,4 @@ The following from left to right: Vanilla Flux, PAG, SEG
   year={2024}
 }
 ```
+</details>
